@@ -1,0 +1,80 @@
+<!-- 课程列表组件 -->
+<script setup>
+import { ref } from 'vue'
+import channelSelect from './channelSelect.vue'
+// import { ElPagination } from 'element-plus'
+// import 'element-plus/dist/index.css'
+
+const props = defineProps({
+  allSubjectList: {
+    type: Array,
+  },
+  getSubjectList: {
+    type: Function,
+  },
+})
+
+// 定义请求参数对象
+const params = ref({
+  page: 1, //当前页
+  pagesize: 2,
+  categoryld: '',
+})
+
+const onSearch = () => {
+  props.getSubjectList(params.value)
+}
+
+const handleReset = () => {
+  // 重置参数
+  params.value = {
+    page: 1,
+    pagesize: 2,
+    categoryld: '',
+  }
+  props.getSubjectList(params.value)
+}
+
+const onCurrentChange = (page) => {
+  params.value.page = page
+  props.getSubjectList(params.value)
+}
+</script>
+
+<template>
+  <!-- 表单区域 -->
+  <el-form inline width="100%">
+    <el-form-item label="课程分类:">
+      <channel-select v-model="params.categoryld" width="240px"></channel-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="onSearch">搜索</el-button>
+      <el-button @click="handleReset">重置</el-button>
+    </el-form-item>
+  </el-form>
+
+  <!-- 表格区域 -->
+  <el-table :data="allSubjectList" style="width: 100%; height: 45vh" v-loading="loading">
+    <el-table-column label="序号" type="index" width="100"></el-table-column>
+    <slot name="list"></slot>
+    <!-- 操作 -->
+    <el-table-column label="操作" width="250">
+      <template #default="{ row }">
+        <slot :row="row"></slot>
+      </template>
+    </el-table-column>
+
+    <!-- 空数据处理 -->
+    <template #empty>
+      <el-empty desciption="暂无数据"></el-empty>
+    </template>
+  </el-table>
+  <!-- 分页区域 -->
+  <el-pagination
+    v-model:current-page="params.page"
+    v-model:page-size="params.pagesize"
+    layout="prev, pager, next"
+    @current-change="onCurrentChange"
+    style="margin-top: 30px; justify-content: flex-end"
+  />
+</template>

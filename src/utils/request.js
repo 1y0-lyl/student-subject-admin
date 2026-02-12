@@ -1,14 +1,15 @@
 import axios from 'axios'
 import { useUserStore } from '@/stores'
 import { ElMessage } from 'element-plus'
+import 'element-plus/dist/index.css'
 import router from '@/router'
 
-const baseURL = 'http://127.0.0.1:4523/m1/7795787-7542560-7084436'
+const baseURL = 'http://127.0.0.1:4523/m1/7818538-7566348-7116794'
 const instance = axios.create({
   // 基地址
   baseURL,
   // 超时时间
-  timeout: '10000',
+  timeout: 10000,
 })
 
 // 请求拦截器
@@ -28,7 +29,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (res) => {
     // 处理业务成功
-    if (res.data.code == 200) {
+    if (res.data.code <= 100 || res.data.code == 200) {
       return res
     }
     // 处理业务失败
@@ -37,7 +38,7 @@ instance.interceptors.response.use(
   },
   (err) => {
     // 401错误
-    if (err.response?.status === 401) {
+    if (err.response?.status === 400) {
       router.push('/login')
     }
 
