@@ -42,7 +42,12 @@ const onCommand = async (command) => {
       </div>
       <el-dropdown placement="bottom-end" @command="onCommand">
         <span class="el-dropdown__box">
-          <el-avatar :src="avatar" />
+          <el-avatar
+            :src="
+              userStore.user?.data?.avatar ||
+              'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+            "
+          />
           <el-icon><CaretBottom /></el-icon>
         </span>
         <template #dropdown>
@@ -112,6 +117,9 @@ const onCommand = async (command) => {
     justify-content: center;
     font-size: 14px;
     color: #666;
+  }
+  .el-dropdown__box {
+    margin-top: 10px;
   }
 }
 </style>

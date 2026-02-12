@@ -14,6 +14,7 @@ import { commentAddService, commentGetListService } from '@/api/comments'
 
 const loading = ref(false)
 const selectList = ref([])
+
 // 获取选课列表
 const userStore = useUserStore()
 const params = ref({
@@ -62,8 +63,26 @@ const openComment = async (row) => {
   commentId.value = row.course.courseId
 }
 
+// 评论字数校验
+const formRef = ref()
+const rules = {
+  content: [
+    { required: true, message: '请输入评论内容', trigger: 'blur' },
+    {
+      min: 1,
+      max: 200,
+      message: '评论内容必须在1-200个字符之间',
+      trigger: 'blur',
+    },
+  ],
+}
+
 // 发布评价
-const commentContent = ref('')
+const commentContent = ref({
+  courseId: '',
+  userId: '',
+  content: '',
+})
 const onSubmitComment = async (text) => {
   // 这里可以进行评论内容的提交逻辑
   commentContent.value = {
@@ -71,13 +90,16 @@ const onSubmitComment = async (text) => {
     userId: userStore.user.data.userId,
     content: text,
   }
+  await formRef.value.validate()
   await commentAddService(commentContent.value)
+  console.log(commentContent)
+
   ElMessage.success('评论提交成功!')
   // 刷新评论列表
   const res = await commentGetListService(commentId.value)
   commentList.value = res.data.data
-  // 提交后清空输入框
-  commentContent.value = ''
+  // 提交后清空输入框内容
+  commentContent.value.content = ''
 }
 </script>
 
@@ -131,14 +153,14 @@ const onSubmitComment = async (text) => {
     <div class="comment">
       <ul class="upper" v-infinite-scroll="load" style="overflow: auto">
         <li class="upper-comment" v-for="item in commentList" :key="item.reviewId">
-          <!-- 用户部分 -->
+          <!-- 上方用户部分 -->
           <div class="user">
             <div class="avatar">
               <el-avatar :src="item.avatar" />
             </div>
             <div class="username">{{ item.userName }}</div>
           </div>
-          <!-- 评论内容 -->
+          <!-- 全部评论内容 -->
           <div class="content">
             <p class="text">{{ item.content }}</p>
             <div class="createTime">{{ item.createTime }}</div>
@@ -146,18 +168,37 @@ const onSubmitComment = async (text) => {
         </li>
       </ul>
       <div class="lower">
-        <!-- 用户部分 -->
+        <!-- 下方用户部分 -->
         <div class="user">
           <div class="avatar">
-            <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+            <el-avatar
+              :src="
+                userStore.user?.data?.avatar ||
+                'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+              "
+            />
           </div>
           <div class="username">{{ userStore.user.data.userName }}</div>
         </div>
-        <!-- 评论内容 -->
-        <el-input v-model="commentContent" class="my-comm" placeholder="发表你的看法"></el-input>
-        <el-button class="submit" type="primary" @click="onSubmitComment(commentContent)"
-          >提交评论</el-button
-        >
+        <!-- 我的评论内容 -->
+        <el-form class="form" :rules="rules" ref="formRef" :model="commentContent">
+          <el-form-item class="comm" prop="content">
+            <el-input
+              v-model="commentContent.content"
+              class="my-comm"
+              placeholder="发表你的看法"
+            ></el-input>
+            <span>已写{{ commentContent.content.length }}字</span>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              class="submit"
+              type="primary"
+              @click="onSubmitComment(commentContent.content)"
+              >提交评论</el-button
+            >
+          </el-form-item>
+        </el-form>
       </div>
     </div>
   </el-dialog>
@@ -186,7 +227,6 @@ const onSubmitComment = async (text) => {
     flex-direction: column;
     padding: 16px;
     padding-top: 0;
-    // overflow-y: auto;
     .upper-comment {
       padding: 10px;
       display: flex;
@@ -198,8 +238,6 @@ const onSubmitComment = async (text) => {
         align-items: center;
       }
       .createTime {
-        display: flex;
-        justify-content: flex-end;
         padding-right: 5px;
         color: #999;
       }
@@ -219,13 +257,28 @@ const onSubmitComment = async (text) => {
       align-items: center;
       justify-content: space-around;
       margin-left: -20px;
-      margin-right: 20px;
+      margin-right: 40px;
     }
-    .submit {
-      margin-left: 40px;
-    }
-    .my-comm {
-      height: 50px;
+    .form {
+      display: flex;
+      width: 500px;
+      .comm {
+        position: relative;
+        top: 15px;
+        width: 1000px;
+        span {
+          position: relative;
+          left: 860px;
+          color: #999;
+        }
+      }
+      .submit {
+        margin-left: 40px;
+      }
+      .my-comm {
+        width: 925px;
+        height: 50px;
+      }
     }
   }
 }
