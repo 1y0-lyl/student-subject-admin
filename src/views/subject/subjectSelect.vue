@@ -11,6 +11,7 @@ import {
 import { useUserStore } from '@/stores'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { commentAddService, commentGetListService } from '@/api/comments'
+import 'element-plus/dist/index.css'
 
 const loading = ref(false)
 const selectList = ref([])
@@ -47,6 +48,7 @@ const deleteSelect = async (row) => {
     cancelButtonText: '取消',
   })
   await subDropSubjectService(row.course.courseId)
+  ElMessage.success('退选课程成功')
   getSelectList()
 }
 

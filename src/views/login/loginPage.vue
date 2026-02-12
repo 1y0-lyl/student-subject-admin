@@ -9,7 +9,7 @@ import { ref } from 'vue'
 
 // 控制登录或注册页面的展示
 const isRegister = ref(false)
-
+// 表单ref
 const form = ref('')
 
 // 表单元素收集
@@ -25,10 +25,12 @@ const formData = ref(
 
 // 校验规则
 const rules = {
+  // 用户名
   userName: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 2, max: 10, message: '用户名必须是2-10位的字符', trigger: 'blur' },
   ],
+  // 密码
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     {
@@ -37,6 +39,7 @@ const rules = {
       trigger: 'blur',
     },
   ],
+  // 确认密码
   repassword: [
     { required: true, message: '请再次输入密码', trigger: 'blur' },
     {
@@ -57,6 +60,18 @@ const rules = {
   ],
 }
 
+// 切换登录/注册时，表单元素清空
+const toggle = () => {
+  // 清空表单
+  formData.value = {
+    userName: '',
+    password: '',
+    repassword: '',
+  }
+  // 切换页面
+  isRegister.value = !isRegister.value
+}
+
 // 点击注册事件
 const regist = async () => {
   // 注册前预校验
@@ -75,7 +90,9 @@ const regist = async () => {
   }
 }
 
+// 记住-状态
 const remember = ref(false)
+// 调用用户store
 const userStore = useUserStore()
 // 点击登录事件
 const login = async () => {
@@ -89,9 +106,13 @@ const login = async () => {
   userStore.setId(res.data.data.userId)
   // 记住-选项
   if (remember.value) {
+    // 存储密码到本地
     localStorage.setItem('userData', JSON.stringify(formData.value))
   } else {
-    localStorage.removeItem('userData')
+    // 如果本地有用户数据，则清除
+    if (localStorage.getItem('userData')) {
+      localStorage.removeItem('userData')
+    }
   }
   // 提示登录成功
   ElMessage.success('登录成功!')
@@ -147,7 +168,7 @@ const login = async () => {
             </el-button>
           </el-form-item>
           <el-form-item class="flex">
-            <el-link type="info" :underline="false" @click="isRegister = false">
+            <el-link type="info" :underline="false" @click="toggle">
               ← 已有账户？
               <p style="color: #35b5f2">返回登录</p>
             </el-link>
@@ -178,7 +199,7 @@ const login = async () => {
           <el-form-item class="flex">
             <div class="flex">
               <el-checkbox v-model="remember">记住我</el-checkbox>
-              <el-link type="primary" :underline="false">忘记密码？</el-link>
+              <!-- <el-link type="primary" :underline="false">忘记密码？</el-link> -->
             </div>
           </el-form-item>
           <el-form-item>
@@ -187,7 +208,7 @@ const login = async () => {
             >
           </el-form-item>
           <el-form-item class="flex">
-            <el-link type="info" :underline="false" @click="isRegister = true">
+            <el-link type="info" :underline="false" @click="toggle">
               没有账号？
               <p style="color: #35b5f2">新用户注册</p>
               &nbsp;→
