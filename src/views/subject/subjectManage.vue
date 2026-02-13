@@ -62,6 +62,10 @@ const userStore = useUserStore()
 
 // 选课操作
 const onSelect = async (row) => {
+  if (row.isSelect == true) {
+    ElMessage.error('你已经选过这节课了!')
+    return
+  }
   await subSelectSubjectService({
     userId: userStore.user.data.userId,
     courseId: row.courseId,
@@ -87,9 +91,7 @@ const onSelect = async (row) => {
         <el-table-column prop="categoryName" label="课程分类" width="300"></el-table-column>
       </template>
       <template #default="{ row }">
-        <el-button type="success" size="small" :disabled="row.isSelect" @click="onSelect(row)"
-          >选课</el-button
-        >
+        <el-button type="success" size="small" @click="onSelect(row)">选课</el-button>
         <el-button type="primary" size="small" @click="onEdit(row)">编辑</el-button>
         <el-button type="danger" size="small" @click="onDel(row)">删除</el-button>
       </template>

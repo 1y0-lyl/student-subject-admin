@@ -3,7 +3,7 @@
 import { ref } from 'vue'
 import channelSelect from './channelSelect.vue'
 // import { ElPagination } from 'element-plus'
-// import 'element-plus/dist/index.css'
+import 'element-plus/dist/index.css'
 
 const props = defineProps({
   allSubjectList: {
@@ -20,19 +20,22 @@ const params = ref({
   pagesize: 2,
   categoryld: '',
 })
-
+const isSearch = ref(false)
 const onSearch = () => {
   props.getSubjectList(params.value)
+  isSearch.value = true
 }
 
 const handleReset = () => {
   // 重置参数
-  params.value = {
-    page: 1,
-    pagesize: 2,
-    categoryld: '',
+  // 只有选择了课程分类并且搜索后 点击重置才需要重新渲染
+  if (params.value.categoryld !== '' && isSearch.value == true) {
+    params.value.categoryld = ''
+    props.getSubjectList(params.value)
+    isSearch.value = false
+  } else {
+    params.value.categoryld = ''
   }
-  props.getSubjectList(params.value)
 }
 
 const onCurrentChange = (page) => {
@@ -74,6 +77,7 @@ const onCurrentChange = (page) => {
     v-model:current-page="params.page"
     v-model:page-size="params.pagesize"
     layout="prev, pager, next"
+    :total="allSubjectList.length"
     @current-change="onCurrentChange"
     style="margin-top: 30px; justify-content: flex-end"
   />

@@ -45,7 +45,7 @@ const onEditClass = (row, $index) => {
 
 // 删除分类操作
 const onDelClass = async (row) => {
-  await ElMessageBox.confirm('您确认删除吗？', '请确认', {
+  await ElMessageBox.confirm('您确认删除该分类吗？', '请确认', {
     type: 'warning',
     confirmButtonText: '确认',
     cancelButtonText: '取消',
@@ -55,18 +55,7 @@ const onDelClass = async (row) => {
   getChannelList()
 }
 
-const onSuccess = (data) => {
-  console.log(data)
-  // if (data.categoryId) {
-  //   // 编辑分类成功
-  //   const index = channelList.value.findIndex((item) => item.categoryId === data.categoryId)
-  //   if (index !== -1) {
-  //     channelList.value[index] = data
-  //   }
-  // } else {
-  //   // 新增分类成功
-  //   channelList.value.push(data)
-  // }
+const onSuccess = () => {
   getChannelList()
 }
 </script>
@@ -77,7 +66,7 @@ const onSuccess = (data) => {
       <el-button type="primary" plain @click="onAddClass">添加分类</el-button>
     </template>
     <!-- 分类表格区域 -->
-    <el-table :data="channelList" style="width: 100%; height: 45vh" v-loading="loading">
+    <el-table :data="channelList" style="width: 100%; height: 53vh" v-loading="loading">
       <el-table-column label="序号" type="index" width="100"></el-table-column>
       <el-table-column prop="name" label="分类名称"></el-table-column>
       <el-table-column prop="desc" label="分类描述"></el-table-column>

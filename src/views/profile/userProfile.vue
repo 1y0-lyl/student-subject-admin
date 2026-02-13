@@ -5,7 +5,7 @@ import { useUserStore } from '@/stores'
 import 'element-plus/dist/index.css'
 
 const userstore = useUserStore()
-const srcList = [userstore.user?.data?.avatar]
+const srcList = [userstore.user.data.avatar]
 </script>
 
 <template>
@@ -31,6 +31,7 @@ const srcList = [userstore.user?.data?.avatar]
 
 <style lang="scss" scoped>
 .profile {
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;

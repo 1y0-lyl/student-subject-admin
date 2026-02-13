@@ -151,19 +151,17 @@ const onSubmitComment = async (text) => {
     align-center
     style="height: 80%"
   >
-    <h1>课程名:{{ commTitle }}</h1>
+    <h1>当前课程:{{ commTitle }}</h1>
     <div class="comment">
       <ul class="upper" v-infinite-scroll="load" style="overflow: auto">
         <li class="upper-comment" v-for="item in commentList" :key="item.reviewId">
-          <!-- 上方用户部分 -->
+          <!-- 上方头像部分 -->
           <div class="user">
-            <div class="avatar">
-              <el-avatar :src="item.avatar" />
-            </div>
-            <div class="username">{{ item.userName }}</div>
+            <el-avatar :src="item.avatar" />
           </div>
           <!-- 全部评论内容 -->
           <div class="content">
+            <div class="username">{{ item.userName }}</div>
             <p class="text">{{ item.content }}</p>
             <div class="createTime">{{ item.createTime }}</div>
           </div>
@@ -190,7 +188,11 @@ const onSubmitComment = async (text) => {
               class="my-comm"
               placeholder="发表你的看法"
             ></el-input>
-            <span>已写{{ commentContent.content.length }}字</span>
+          </el-form-item>
+          <el-form-item>
+            <span :class="{ active: commentContent.content.length > 200 }"
+              >已写{{ commentContent.content.length }}/200字</span
+            >
           </el-form-item>
           <el-form-item>
             <el-button
@@ -238,10 +240,17 @@ const onSubmitComment = async (text) => {
         display: flex;
         flex-direction: column;
         align-items: center;
+        position: relative;
+        top: 15px;
       }
       .createTime {
         padding-right: 5px;
         color: #999;
+      }
+      .username {
+        color: #646464;
+        position: relative;
+        top: 5px;
       }
     }
   }
@@ -257,28 +266,36 @@ const onSubmitComment = async (text) => {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-around;
-      margin-left: -20px;
-      margin-right: 40px;
+      justify-content: center;
+      margin-left: -10px;
+      margin-right: 20px;
+      position: relative;
     }
     .form {
       display: flex;
       width: 500px;
       .comm {
         position: relative;
-        top: 15px;
+        top: -5px;
         width: 1000px;
-        span {
-          position: relative;
-          left: 860px;
-          color: #999;
-        }
+      }
+      span {
+        position: absolute;
+        left: -80px;
+        top: 40px;
+        width: 100px;
+        color: #999;
+      }
+      .active {
+        color: red;
       }
       .submit {
         margin-left: 40px;
+        position: relative;
+        top: -2px;
       }
       .my-comm {
-        width: 925px;
+        width: 950px;
         height: 50px;
       }
     }

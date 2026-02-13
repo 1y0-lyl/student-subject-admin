@@ -105,9 +105,10 @@ defineExpose({
       </el-form-item>
 
       <!-- 课程封面图片 -->
-      <el-form-item label="课程封面" prop="cover_img">
+      <el-form-item label="课程封面" prop="img">
         <!-- 此处需要关闭自动上传 不需要配置action参数 只需要做前端的本地预览图片即可 -->
         <el-upload
+          v-model="formModel.img"
           class="avatar-uploader"
           :show-file-list="false"
           :auto-upload="false"
@@ -118,7 +119,7 @@ defineExpose({
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="课程内容" prop="content">
+      <el-form-item label="课程内容" prop="desc">
         <div class="editor">
           <quill-editor
             ref="editorRef"

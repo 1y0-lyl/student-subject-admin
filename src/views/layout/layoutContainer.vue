@@ -38,7 +38,7 @@ const onCommand = async (command) => {
   <el-container class="layout-container">
     <el-header class="el-header">
       <div>
-        欢迎！<strong>{{ userStore.user?.data?.userName }}</strong>
+        欢迎回来！<strong>{{ userStore.user?.data?.userName }}</strong>
       </div>
       <el-dropdown placement="bottom-end" @command="onCommand">
         <span class="el-dropdown__box">
