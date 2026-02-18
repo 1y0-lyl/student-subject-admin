@@ -7,44 +7,51 @@ import channelEdit from './component/channelEdit.vue'
 import { subDeleteChannelService, subGetChannelService } from '@/api/subject'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
+// 可见状态
 const visDia = ref()
 // 加载状态
 const loading = ref(false)
-
+// 接口传递参数
 const pageState = ref({
   page: 1,
   pagesize: 2,
 })
 // 分类列表
 const channelList = ref([])
-const getChannelList = async () => {
+// 获取分类列表
+const getChannelList = async (page) => {
+  // 展示加载
   loading.value = true
-  const res = await subGetChannelService()
+  const res = await subGetChannelService(page)
+  // 更新分类列表数据
   channelList.value = res.data.data.categoryList
-  // 向后代组件提供数据
+  // 关闭加载
   loading.value = false
 }
-getChannelList()
+getChannelList(pageState.value)
 
 // 分页操作
 const onCurrentChange = (page) => {
   pageState.value.page = page
+  // 重新渲染
   getChannelList(pageState.value)
-  console.log(1)
 }
 
 // 增加分类操作
 const onAddClass = () => {
+  // 传递空对象
   visDia.value.open({})
 }
 
 // 编辑分类操作
-const onEditClass = (row, $index) => {
-  visDia.value.open(row, $index)
+const onEditClass = (row) => {
+  // 传递当前行数据
+  visDia.value.open(row)
 }
 
 // 删除分类操作
 const onDelClass = async (row) => {
+  // 弹出提示框
   await ElMessageBox.confirm('您确认删除该分类吗？', '请确认', {
     type: 'warning',
     confirmButtonText: '确认',
@@ -52,9 +59,11 @@ const onDelClass = async (row) => {
   })
   await subDeleteChannelService(row.categoryId)
   ElMessage.success('删除分类成功')
+  // 重新渲染
   getChannelList()
 }
 
+// 提交后重新渲染
 const onSuccess = () => {
   getChannelList()
 }
@@ -71,8 +80,8 @@ const onSuccess = () => {
       <el-table-column prop="name" label="分类名称"></el-table-column>
       <el-table-column prop="desc" label="分类描述"></el-table-column>
       <el-table-column label="操作" width="250">
-        <template #default="{ row, $index }">
-          <el-button type="success" @click="onEditClass(row, $index)">编辑分类</el-button>
+        <template #default="{ row }">
+          <el-button type="success" @click="onEditClass(row)">编辑分类</el-button>
           <el-button type="danger" @click="onDelClass(row)">删除分类</el-button>
         </template>
       </el-table-column>

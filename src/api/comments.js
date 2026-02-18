@@ -1,3 +1,4 @@
+// 有关于评论的接口
 import request from '@/utils/request'
 
 // 获取课程评价列表

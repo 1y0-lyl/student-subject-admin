@@ -1,3 +1,4 @@
+// 有关于用户的接口
 import request from '@/utils/request'
 
 // 注册请求

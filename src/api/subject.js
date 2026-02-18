@@ -1,3 +1,4 @@
+// 有关于课程的接口
 import request from '@/utils/request'
 
 // 分类：

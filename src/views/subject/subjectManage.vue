@@ -12,6 +12,7 @@ import subjectEdit from './component/subjectEdit.vue'
 import { useUserStore } from '@/stores'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
+// 加载状态
 const loading = ref(false)
 const subjectEditRef = ref('')
 
@@ -27,9 +28,9 @@ const allSubjectList = ref([])
 
 // 获取课程列表
 const getSubjectList = async () => {
-  allSubjectList.value = []
   loading.value = true
   const res = await subGetSubjectService(params.value)
+  // 更新课程列表
   allSubjectList.value = res.data.data.courseList
   loading.value = false
 }
@@ -47,6 +48,7 @@ const onEdit = (row) => {
 
 // 删除课程操作
 const onDel = async (row) => {
+  // 弹出提示框
   await ElMessageBox.confirm('您确认要删除该课程吗？', '请确认', {
     type: 'warning',
     confirmButtonText: '确认',
@@ -54,6 +56,7 @@ const onDel = async (row) => {
   })
   await subDeleteSubjectService(row.courseId)
   ElMessage.success('删除课程成功')
+  // 重新渲染
   getSubjectList()
 }
 
@@ -62,8 +65,9 @@ const userStore = useUserStore()
 
 // 选课操作
 const onSelect = async (row) => {
+  // 已经选过的课增加提示并退出逻辑
   if (row.isSelect == true) {
-    ElMessage.error('你已经选过这节课了!')
+    ElMessage.error('你已经选过这节课了,换一节课选吧!')
     return
   }
   await subSelectSubjectService({

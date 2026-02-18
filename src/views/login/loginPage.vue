@@ -72,6 +72,8 @@ const toggle = () => {
   isRegister.value = !isRegister.value
 }
 
+// 调用用户store
+const userStore = useUserStore()
 // 点击注册事件
 const regist = async () => {
   // 注册前预校验
@@ -91,9 +93,7 @@ const regist = async () => {
 }
 
 // 记住-状态
-const remember = ref(false)
-// 调用用户store
-const userStore = useUserStore()
+const remember = ref(true)
 // 点击登录事件
 const login = async () => {
   // 登录前预校验

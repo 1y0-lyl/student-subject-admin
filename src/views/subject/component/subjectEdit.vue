@@ -6,8 +6,11 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { subAddChannelService, subEditSubjectService } from '@/api/subject'
 import { ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
+import { Plus } from '@element-plus/icons-vue'
 
+//  抽屉的展示
 const visibleDrawer = ref(false)
+// 关联富文本编辑器
 const editorRef = ref()
 
 // 准备表单数据
@@ -42,20 +45,20 @@ const rules = {
 // 提交
 const emit = defineEmits(['success'])
 const onSubmit = async () => {
-  // 这里可以进行表单验证和提交逻辑
+  // 表单提交预校验
   await formRef.value.validate()
+  // 创建一个新的FormData对象
   const fd = new FormData()
+  // 遍历表单数据对象formModel中的所有字段
   for (let key in formModel.value) {
     fd.append(key, formModel.value[key])
   }
   if (formModel.value.courseId) {
     // 编辑课程
-    console.log('编辑课程数据:', formModel.value)
     await subEditSubjectService(fd)
     ElMessage.success('编辑课程成功')
   } else {
     // 新增课程
-    console.log('新增课程数据:', formModel.value)
     await subAddChannelService(fd)
     ElMessage.success('新增课程成功')
   }
@@ -70,6 +73,7 @@ const open = (row) => {
     formModel.value = { ...row }
     imgUrl.value = row.img
   } else {
+    // 重置表单数据
     formModel.value = {
       courseId: '',
       courseName: '',
@@ -78,7 +82,9 @@ const open = (row) => {
       categoryId: '',
       categoryName: '',
     }
-    imgUrl.value = '' // 新增课程时重置图片预览
+    // 新增课程时重置图片预览
+    imgUrl.value = ''
+    // 富文本编辑器内容清空
     editorRef.value.setHTML('')
   }
 }
@@ -106,7 +112,6 @@ defineExpose({
 
       <!-- 课程封面图片 -->
       <el-form-item label="课程封面" prop="img">
-        <!-- 此处需要关闭自动上传 不需要配置action参数 只需要做前端的本地预览图片即可 -->
         <el-upload
           v-model="formModel.img"
           class="avatar-uploader"
@@ -119,6 +124,7 @@ defineExpose({
         </el-upload>
       </el-form-item>
 
+      <!-- 富文本编辑器 -->
       <el-form-item label="课程内容" prop="desc">
         <div class="editor">
           <quill-editor

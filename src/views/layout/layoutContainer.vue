@@ -1,3 +1,4 @@
+<!-- 页面布局架子 -->
 <script setup>
 import router from '@/router'
 import { useUserStore } from '@/stores'
@@ -11,9 +12,10 @@ const userStore = useUserStore()
 onMounted(async () => {
   await userStore.getUser(userStore.id)
 })
-// 退出登录
 
+// 退出登录
 const onCommand = async (command) => {
+  // 点击退出登录时，弹出确认框
   if (command === 'logout') {
     await ElMessageBox.confirm('您确认退出吗？', '请确认', {
       type: 'warning',
@@ -25,10 +27,13 @@ const onCommand = async (command) => {
     userStore.setId('')
     userStore.user = {}
     // 清除localStorage中的用户信息
-    localStorage.removeItem('userData')
+    // localStorage.removeItem('userData')
     ElMessage.success('退出登录成功!')
+    // 返回登录页
     router.push('/login')
   } else {
+    // 跳转到对应页面
+
     router.push(`/user/${command}`)
   }
 }

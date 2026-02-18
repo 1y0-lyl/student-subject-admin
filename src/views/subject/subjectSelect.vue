@@ -48,15 +48,20 @@ const deleteSelect = async (row) => {
     cancelButtonText: '取消',
   })
   await subDropSubjectService(row.course.courseId)
+  // 已经退了的课要将退课参数同步到课程管理页面 使得可以重新选课（待做）
+  userStore.delId = row.course.courseId
+  console.log(userStore.delId)
   ElMessage.success('退选课程成功')
   getSelectList()
 }
 
 // 查看评价
+// 评价信息
 const commTitle = ref('')
 const commentId = ref('')
 const commentVisible = ref(false)
 const commentList = ref([])
+// 查询评价列表
 const openComment = async (row) => {
   commentVisible.value = true
   const res = await commentGetListService(row.course.courseId)
@@ -80,11 +85,13 @@ const rules = {
 }
 
 // 发布评价
+// 评价内容信息
 const commentContent = ref({
   courseId: '',
   userId: '',
   content: '',
 })
+// 提交
 const onSubmitComment = async (text) => {
   // 这里可以进行评论内容的提交逻辑
   commentContent.value = {
@@ -92,10 +99,10 @@ const onSubmitComment = async (text) => {
     userId: userStore.user.data.userId,
     content: text,
   }
+  // 预校验
   await formRef.value.validate()
   await commentAddService(commentContent.value)
-  console.log(commentContent)
-
+  // 提示信息
   ElMessage.success('评论提交成功!')
   // 刷新评论列表
   const res = await commentGetListService(commentId.value)

@@ -2,13 +2,14 @@
 <script setup>
 import { ref } from 'vue'
 import channelSelect from './channelSelect.vue'
-// import { ElPagination } from 'element-plus'
 import 'element-plus/dist/index.css'
 
 const props = defineProps({
+  // 课程列表
   allSubjectList: {
     type: Array,
   },
+  // 获取课程列表方法
   getSubjectList: {
     type: Function,
   },
@@ -20,24 +21,26 @@ const params = ref({
   pagesize: 2,
   categoryld: '',
 })
+
+// 搜索操作
 const isSearch = ref(false)
 const onSearch = () => {
   props.getSubjectList(params.value)
   isSearch.value = true
 }
 
+// 重置操作
 const handleReset = () => {
   // 重置参数
+  params.value.categoryld = ''
   // 只有选择了课程分类并且搜索后 点击重置才需要重新渲染
   if (params.value.categoryld !== '' && isSearch.value == true) {
-    params.value.categoryld = ''
     props.getSubjectList(params.value)
     isSearch.value = false
-  } else {
-    params.value.categoryld = ''
   }
 }
 
+// 切换分页
 const onCurrentChange = (page) => {
   params.value.page = page
   props.getSubjectList(params.value)

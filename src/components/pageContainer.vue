@@ -12,7 +12,9 @@ defineProps({
   <el-card style="max-width: 100%; min-height: 100%">
     <template #header>
       <div class="header">
+        <!-- 标题 -->
         <span>{{ title }}</span>
+        <!-- 右侧按钮的插槽 -->
         <div class="button">
           <slot name="button"></slot>
         </div>

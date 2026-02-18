@@ -12,6 +12,7 @@ const formModel = ref({
   name: '',
   desc: '',
 })
+
 // 表单规则
 const formRef = ref()
 const rules = {
@@ -30,9 +31,12 @@ const rules = {
 }
 
 // 提交
+// 自定义success事件
 const emit = defineEmits(['success'])
 const onSubmit = async () => {
+  // 提交前预校验
   await formRef.value.validate()
+  // 根据传递参数判断操作类型
   if (formModel.value.categoryId) {
     // 编辑分类
     await subEditChannelService(formModel.value)
@@ -42,17 +46,18 @@ const onSubmit = async () => {
     await subAddChannelService(formModel.value)
     ElMessage.success('新增分类成功')
   }
+  // 传递参数
   emit('success', formModel.value)
-
+  // 关闭弹框
   dialogFormVisible.value = false
 }
 
 // 向外暴露open方法
-const index = ref()
-const open = async (row, $index) => {
+const open = async (row) => {
+  // 展示弹框
   dialogFormVisible.value = true
+  // 回显数据
   formModel.value = { ...row }
-  index.value = $index
 }
 
 defineExpose({

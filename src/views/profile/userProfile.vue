@@ -5,6 +5,7 @@ import { useUserStore } from '@/stores'
 import 'element-plus/dist/index.css'
 
 const userstore = useUserStore()
+// 点击放大图片
 const srcList = [userstore.user.data.avatar]
 </script>
 
