@@ -42,16 +42,16 @@ const openDetail = async (row) => {
 
 // 退选操作
 const deleteSelect = async (row) => {
+  // 提示框
   await ElMessageBox.confirm('您确认要退选该课程吗？', '请确认', {
     type: 'warning',
     confirmButtonText: '确认',
     cancelButtonText: '取消',
   })
+  // 退课接口
   await subDropSubjectService(row.course.courseId)
-  // 已经退了的课要将退课参数同步到课程管理页面 使得可以重新选课（待做）
-  userStore.delId = row.course.courseId
-  console.log(userStore.delId)
   ElMessage.success('退选课程成功')
+  // 重新渲染
   getSelectList()
 }
 

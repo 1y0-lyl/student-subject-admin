@@ -2,6 +2,7 @@
 <script setup>
 import {
   subDeleteSubjectService,
+  subGetSelectInfoService,
   subGetSubjectService,
   subSelectSubjectService,
 } from '@/api/subject'
@@ -65,11 +66,21 @@ const userStore = useUserStore()
 
 // 选课操作
 const onSelect = async (row) => {
-  // 已经选过的课增加提示并退出逻辑
-  if (row.isSelect == true) {
+  // 查询已经选过的课
+  const res = await subGetSelectInfoService({
+    userId: userStore.user.data.userId,
+    page: params.value.page,
+    pagesize: params.value.pagesize,
+  })
+  // 查找该课程是否已经被选了
+  const item = res.data.data.enrollmentList.find((item) => item.courseId === row.courseId)
+  // 当课程已经被选过后 禁用选课功能
+  // 这里的isSelect用于模拟已选课
+  if (item || row.isSelect == true) {
     ElMessage.error('你已经选过这节课了,换一节课选吧!')
     return
   }
+  // 选课接口
   await subSelectSubjectService({
     userId: userStore.user.data.userId,
     courseId: row.courseId,
