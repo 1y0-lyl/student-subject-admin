@@ -87,8 +87,11 @@ const rules = {
 // 发布评价
 // 评价内容信息
 const commentContent = ref({
+  // 课程id
   courseId: '',
+  // 用户id
   userId: '',
+  // 评论内容
   content: '',
 })
 // 提交

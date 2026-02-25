@@ -17,8 +17,11 @@ const props = defineProps({
 
 // 定义请求参数对象
 const params = ref({
-  page: 1, //当前页
+  //当前页
+  page: 1,
+  // 一页所能存放的条数
   pagesize: 2,
+  // 分类id
   categoryld: '',
 })
 
@@ -31,13 +34,14 @@ const onSearch = () => {
 
 // 重置操作
 const handleReset = () => {
-  // 重置参数
-  params.value.categoryld = ''
   // 只有选择了课程分类并且搜索后 点击重置才需要重新渲染
   if (params.value.categoryld !== '' && isSearch.value == true) {
     props.getSubjectList(params.value)
     isSearch.value = false
+    console.log(111)
   }
+  // 重置参数
+  params.value.categoryld = ''
 }
 
 // 切换分页

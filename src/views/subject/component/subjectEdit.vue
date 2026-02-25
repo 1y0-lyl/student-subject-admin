@@ -15,18 +15,26 @@ const editorRef = ref()
 
 // 准备表单数据
 const formModel = ref({
+  // 课程id
   courseId: '',
+  // 课程名
   courseName: '',
+  // 图片
   img: '',
+  // 课程描述
   desc: '',
+  // 分类id
   categoryId: '',
+  // 分类名
   categoryName: '',
 })
 
 // 图片上传预览
 const imgUrl = ref('')
 const onSelectFile = (selectFile) => {
+  // 将选择的文件对象转换为可预览的 URL 地址，用于图片预览展示
   imgUrl.value = URL.createObjectURL(selectFile.raw)
+  // 用于后续提交到服务器
   formModel.value.img = selectFile.raw
 }
 
@@ -38,8 +46,26 @@ const rules = {
     { pattern: /^\S{1,15}$/, message: '课程标题必须是1-15位的非空字符', trigger: 'blur' },
   ],
   categoryName: [{ required: true, message: '请选择课程分类', trigger: 'change' }],
-  desc: [{ min: 1, max: 500, message: '课程内容必须在1-500个字符之间', trigger: 'blur' }],
+  desc: [{ required: true, message: '请输入课程内容', trigger: 'blur' }],
   img: [{ required: true, message: '请上传课程封面图片', trigger: 'change' }],
+}
+
+function getPlainText(html) {
+  // 创建一个元素
+  const div = document.createElement('div')
+  div.innerHTML = html
+  // 返回纯文本内容 用于统计长度
+  return div.textContent
+}
+
+// 失焦触发表单单项校验
+const handleEditorBlur = () => {
+  // 填入内容后再删除需要手动清空 不然会有br占位符阻碍规则校验
+  if (getPlainText(formModel.value.desc).length == 0) {
+    formModel.value.desc = ''
+  }
+  // 由于是富文本编辑器 所以需要手动校验
+  formRef.value?.validateField('desc')
 }
 
 // 提交
@@ -128,6 +154,8 @@ defineExpose({
       <el-form-item label="课程内容" prop="desc">
         <div class="editor">
           <quill-editor
+            placeholder="请输入课程内容..."
+            @blur="handleEditorBlur"
             ref="editorRef"
             theme="snow"
             v-model:content="formModel.desc"
@@ -135,6 +163,7 @@ defineExpose({
           >
           </quill-editor>
         </div>
+        <span style="color: #999">已写 {{ getPlainText(formModel.desc).length }} 字</span>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">发布</el-button>

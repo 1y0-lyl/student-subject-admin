@@ -2,6 +2,7 @@
 <script setup>
 import {
   subDeleteSubjectService,
+  subDropSubjectService,
   subGetSelectInfoService,
   subGetSubjectService,
   subSelectSubjectService,
@@ -33,6 +34,23 @@ const getSubjectList = async () => {
   const res = await subGetSubjectService(params.value)
   // 更新课程列表
   allSubjectList.value = res.data.data.courseList
+  // 遍历每节课的课程id
+  allSubjectList.value.forEach(async (item) => {
+    // 查询已选课列表
+    const res = await subGetSelectInfoService({
+      userId: userStore.user.data.userId,
+      page: params.value.page,
+      pagesize: params.value.pagesize,
+    })
+    // 查找该课程是否已经被选了
+    const subSel = res.data.data.enrollmentList.find(
+      (selected) => selected.courseId === item.courseId,
+    )
+    // 如果已经被选了 那么选课按钮就变成退课
+    if (subSel) {
+      item.isSelect = true
+    }
+  })
   loading.value = false
 }
 getSubjectList()
@@ -66,20 +84,6 @@ const userStore = useUserStore()
 
 // 选课操作
 const onSelect = async (row) => {
-  // 查询已经选过的课
-  const res = await subGetSelectInfoService({
-    userId: userStore.user.data.userId,
-    page: params.value.page,
-    pagesize: params.value.pagesize,
-  })
-  // 查找该课程是否已经被选了
-  const item = res.data.data.enrollmentList.find((item) => item.courseId === row.courseId)
-  // 当课程已经被选过后 禁用选课功能
-  // 这里的isSelect用于模拟已选课
-  if (item || row.isSelect == true) {
-    ElMessage.error('你已经选过这节课了,换一节课选吧!')
-    return
-  }
   // 选课接口
   await subSelectSubjectService({
     userId: userStore.user.data.userId,
@@ -87,6 +91,21 @@ const onSelect = async (row) => {
   })
   row.isSelect = true
   ElMessage.success('选课成功!')
+}
+
+// 退课操作
+const deleteSelect = async (row) => {
+  // 提示框
+  await ElMessageBox.confirm('您确认要退选该课程吗？', '请确认', {
+    type: 'warning',
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+  })
+  // 退课接口
+  await subDropSubjectService(row.courseId)
+  ElMessage.success('退选课程成功')
+  // 这里不用重新渲染
+  row.isSelect = false
 }
 </script>
 
@@ -106,7 +125,10 @@ const onSelect = async (row) => {
         <el-table-column prop="categoryName" label="课程分类" width="300"></el-table-column>
       </template>
       <template #default="{ row }">
-        <el-button type="success" size="small" @click="onSelect(row)">选课</el-button>
+        <el-button type="success" size="small" @click="onSelect(row)" v-if="!row.isSelect"
+          >选课</el-button
+        >
+        <el-button type="danger" size="small" @click="deleteSelect(row)" v-else>退选</el-button>
         <el-button type="primary" size="small" @click="onEdit(row)">编辑</el-button>
         <el-button type="danger" size="small" @click="onDel(row)">删除</el-button>
       </template>

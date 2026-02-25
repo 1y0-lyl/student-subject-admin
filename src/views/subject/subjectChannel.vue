@@ -25,6 +25,12 @@ const getChannelList = async (page) => {
   const res = await subGetChannelService(page)
   // 更新分类列表数据
   channelList.value = res.data.data.categoryList
+  // 描述为空时的处理
+  channelList.value.forEach((item) => {
+    if (!item.desc) {
+      item.desc = '暂无描述'
+    }
+  })
   // 关闭加载
   loading.value = false
 }
