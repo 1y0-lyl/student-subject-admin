@@ -63,7 +63,7 @@ const openCo = (row) => {
 </script>
 
 <template>
-  <page-container title="我的已选课程" v-loading="loading">
+  <page-container title="我的已选课程">
     <subject-list :allSubjectList="selectList" :getSubjectList="getSelectList" v-loading="loading">
       <template #list>
         <el-table-column prop="course.courseName" label="课程标题" width="200"></el-table-column>

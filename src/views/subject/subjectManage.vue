@@ -110,11 +110,15 @@ const deleteSelect = async (row) => {
 </script>
 
 <template>
-  <page-container title="课程列表" v-loading="loading">
+  <page-container title="课程列表">
     <template #button>
       <el-button type="primary" plain @click="onAdd">新增课程</el-button>
     </template>
-    <subject-list :allSubjectList="allSubjectList" :getSubjectList="getSubjectList">
+    <subject-list
+      :allSubjectList="allSubjectList"
+      :getSubjectList="getSubjectList"
+      v-loading="loading"
+    >
       <template #list>
         <el-table-column prop="courseName" label="课程标题" width="260"></el-table-column>
         <el-table-column prop="img" label="课程图片" width="340">
