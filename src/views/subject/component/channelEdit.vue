@@ -54,6 +54,8 @@ const onSubmit = async () => {
 
 // 向外暴露open方法
 const open = async (row) => {
+  // 解决跨页面校验残留
+  formRef.value?.resetFields()
   // 展示弹框
   dialogFormVisible.value = true
   // 回显数据

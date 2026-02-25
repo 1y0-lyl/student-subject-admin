@@ -94,11 +94,16 @@ const onSubmit = async () => {
 
 // 暴露方法open
 const open = (row) => {
+  // 打开抽屉
   visibleDrawer.value = true
+  // 解决跨页面校验残留
+  formRef.value?.resetFields()
   if (row.categoryId) {
+    // 编辑
     formModel.value = { ...row }
     imgUrl.value = row.img
   } else {
+    // 新增
     // 重置表单数据
     formModel.value = {
       courseId: '',

@@ -28,8 +28,10 @@ const params = ref({
 // 搜索操作
 const isSearch = ref(false)
 const onSearch = () => {
-  props.getSubjectList(params.value)
-  isSearch.value = true
+  if (params.value.categoryld !== '') {
+    props.getSubjectList(params.value)
+    isSearch.value = true
+  }
 }
 
 // 重置操作
@@ -38,7 +40,6 @@ const handleReset = () => {
   if (params.value.categoryld !== '' && isSearch.value == true) {
     props.getSubjectList(params.value)
     isSearch.value = false
-    console.log(111)
   }
   // 重置参数
   params.value.categoryld = ''
