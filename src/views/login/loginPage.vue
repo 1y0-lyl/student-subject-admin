@@ -193,6 +193,7 @@ const login = async () => {
               name="password"
               :prefix-icon="Lock"
               type="password"
+              show-password
               placeholder="请输入密码"
             ></el-input>
           </el-form-item>
