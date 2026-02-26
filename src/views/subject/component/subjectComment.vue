@@ -15,8 +15,6 @@ const commentList = ref([])
 const openComment = async (row) => {
   // 清空输入框内容
   commentContent.value.content = ''
-  // 解决校验状态跨页面残留
-  formRef.value?.resetFields()
   // 展示评论页面
   commentVisible.value = true
   // 查询评论列表
@@ -25,20 +23,6 @@ const openComment = async (row) => {
   commentList.value = res.data.data
   commTitle.value = row.course.courseName
   commentId.value = row.course.courseId
-}
-
-// 评论字数校验
-const formRef = ref()
-const rules = {
-  content: [
-    { required: true, message: '请输入评论内容', trigger: 'blur' },
-    {
-      min: 1,
-      max: 200,
-      message: '评论内容必须在1-200个字符之间',
-      trigger: 'blur',
-    },
-  ],
 }
 
 // 发布评价
@@ -60,8 +44,7 @@ const onSubmitComment = async (text) => {
     userId: userStore.user.data.userId,
     content: text,
   }
-  // 预校验
-  await formRef.value.validate()
+  // 提交评论
   await commentAddService(commentContent.value)
   // 提示信息
   ElMessage.success('评论提交成功!')
@@ -86,10 +69,16 @@ defineExpose({
     width="80%"
     center
     align-center
-    style="height: 80%"
+    style="
+      height: 80%;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    "
   >
     <h1>当前课程:{{ commTitle }}</h1>
     <div class="comment">
+      <div class="total">全部评论({{ commentList.length }})</div>
       <ul class="upper" v-infinite-scroll="load" style="overflow: auto">
         <li class="upper-comment" v-for="item in commentList" :key="item.reviewId">
           <!-- 上方头像部分 -->
@@ -118,27 +107,23 @@ defineExpose({
           <div class="username">{{ userStore.user.data.userName }}</div>
         </div>
         <!-- 我的评论内容 -->
-        <el-form class="form" :rules="rules" ref="formRef" :model="commentContent">
-          <el-form-item class="comm" prop="content">
+        <el-form class="form" :model="commentContent">
+          <div class="comm">
             <el-input
               v-model="commentContent.content"
               class="my-comm"
               placeholder="发表你的看法"
+              show-word-limit
+              maxlength="200"
             ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <span :class="{ active: commentContent.content.length > 200 }"
-              >已写{{ commentContent.content.length }}/200字</span
-            >
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              class="submit"
-              type="primary"
-              @click="onSubmitComment(commentContent.content)"
-              >提交评论</el-button
-            >
-          </el-form-item>
+          </div>
+          <el-button
+            class="submit"
+            type="primary"
+            @click="onSubmitComment(commentContent.content)"
+            :disabled="commentContent.content.trim().length <= 0"
+            >提交评论</el-button
+          >
         </el-form>
       </div>
     </div>
@@ -180,6 +165,12 @@ defineExpose({
         top: 5px;
       }
     }
+    .upper-comment:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+  }
+  .total {
+    margin-top: -10px;
   }
   .lower {
     display: flex;
@@ -206,6 +197,11 @@ defineExpose({
         top: -5px;
         width: 1000px;
       }
+      .my-comm {
+        border-radius: 45px;
+        width: 950px;
+        height: 50px;
+      }
       span {
         position: absolute;
         left: -80px;
@@ -217,13 +213,9 @@ defineExpose({
         color: red;
       }
       .submit {
-        margin-left: 40px;
+        margin-left: 25px;
         position: relative;
         top: -2px;
-      }
-      .my-comm {
-        width: 950px;
-        height: 50px;
       }
     }
   }

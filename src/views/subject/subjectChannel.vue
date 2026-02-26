@@ -83,7 +83,7 @@ const onSuccess = () => {
     <!-- 分类表格区域 -->
     <el-table :data="channelList" style="width: 100%; height: 53vh" v-loading="loading">
       <el-table-column label="序号" type="index" width="100"></el-table-column>
-      <el-table-column prop="name" label="分类名称"></el-table-column>
+      <el-table-column prop="name" label="分类名称" width="250"></el-table-column>
       <el-table-column prop="desc" label="分类描述"></el-table-column>
       <el-table-column label="操作" width="250">
         <template #default="{ row }">

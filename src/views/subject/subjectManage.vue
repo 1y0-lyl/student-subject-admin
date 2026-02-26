@@ -96,7 +96,7 @@ const onSelect = async (row) => {
 // 退课操作
 const deleteSelect = async (row) => {
   // 提示框
-  await ElMessageBox.confirm('您确认要退选该课程吗？', '请确认', {
+  await ElMessageBox.confirm('您已经选过这节课了，您确认要退选该课程吗？', '请确认', {
     type: 'warning',
     confirmButtonText: '确认',
     cancelButtonText: '取消',

@@ -135,7 +135,7 @@ const login = async () => {
           v-if="isRegister"
         >
           <el-form-item>
-            <h1 class="title">注册</h1>
+            <h1 class="title">注册·课程管理系统</h1>
           </el-form-item>
           <el-form-item prop="userName">
             <el-input
@@ -178,7 +178,7 @@ const login = async () => {
         <!-- 登录 -->
         <el-form ref="form" size="large" autocomplete="off" :rules="rules" :model="formData" v-else>
           <el-form-item>
-            <h1 class="title">登录</h1>
+            <h1 class="title">登录·课程管理系统</h1>
           </el-form-item>
           <el-form-item prop="userName">
             <el-input
@@ -242,7 +242,7 @@ const login = async () => {
     justify-content: center;
     user-select: none;
     .title {
-      margin: 25px 5px 0 0;
+      margin: 40px 5px 0 0;
     }
     .button {
       border: 1px rgb(127, 142, 126) solid;
